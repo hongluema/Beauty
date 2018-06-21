@@ -1,0 +1,21 @@
+#git ignore list
+.idea/
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+*/migrations/
+
+
+*.pid
+three.txt
+wallet_mobile_bind.py
+settings.py
+*.png
+*.xml
+*.yml
+.DS_Store
+*.pdf
+*.zip
+log
