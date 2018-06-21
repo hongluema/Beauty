@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block header %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="container" style="margin-top: 7%; margin-bottom: 10%;">
+        <div class="container" style="">
+            <div class="jumbotron">
+                <h1 class="display-4">API</h1>
+                <p class="lead">&nbsp&nbsp&nbsp&nbsp API（Application Programming Interface,应用程序编程接口）是一些预先定义的函数，目的是提供应用程序与开发人员基于某软件或硬件得以访问一组例程的能力，而又无需访问源码，或理解内部工作机制的细节。从概念上看，还是有点信息的，但是很多人还是不怎么理解，API是什么，怎么用</p>
+                <div id="accordion">
+                  <div class="card">
+                    <div id="collapseAPI" class="collapse" aria-labelledby="headingAPI" data-parent="#accordion">
+                      <div class="card-body">
+                          API具体的使用方法
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <a class="btn btn-primary btn-lg" href="#" role="button"  data-toggle="collapse" data-target="#collapseAPI" aria-expanded="true" aria-controls="collapseAPI">详细说明</a>
+            </div>
+        </div>
+        <div class="container" style="">
+            <div class="jumbotron">
+                <h1 class="display-4">免费代理</h1>
+                <p class="lead">&nbsp&nbsp&nbsp&nbsp 代理服务器的设置方法，对于IE和FireFox设置略有不同。IE的设置是这样的，打开IE浏览器，选择菜单栏的“工具/Internet选项...”。这时候分两种情况，对于ADSL拨号用户来说，选择一个网络连接后，点“设置”，如下图所示，选中代理服务器，填入地址和端口号</p>
+                <div id="accordion">
+                  <div class="card">
+                    <div id="collapseAgent" class="collapse" aria-labelledby="headingAgent" data-parent="#accordion">
+                      <div class="card-body">
+                          免费代理具体的使用方法
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <a class="btn btn-primary btn-lg" href="#" role="button"  data-toggle="collapse" data-target="#collapseAgent" aria-expanded="true" aria-controls="collapseOne">详细说明</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block footer %}
+
+{% endblock %}

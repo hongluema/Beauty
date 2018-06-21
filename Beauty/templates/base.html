@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="en">
+    <head>
+        <title>极速代理{{ subtitle }}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" href="data:image/ico;base64,aWNv"><link rel="icon" href="data:image/ico;base64,aWNv">
+
+        <link rel="stylesheet" href="{% static 'css/bootstrap-4.0.0.min.css' %}">
+        <script src="{% static 'js/jquery-3.3.1/jquery.slim.min.js' %}"></script>
+        <script src="{% static 'js/popper-1.14.3/popper.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap-4.1.1/bootstrap.min.js' %}"></script>
+    </head>
+
+    <header>
+        <!-- Navigation -->
+        <nav class="text-light navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                  <img src="{% static 'image/Logo_1.png' %}" width="120" height="35" class="d-inline-block align-top" alt="">
+                </a>
+                <!-- <a class="navbar-brand border rounded border-light" href="{% url 'home' %}">&nbspStarProxy&nbsp</a> -->
+                <div class="" style="margin-left: 18%">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="true" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            {% if user.username %}
+                                <button type="button" class="btn btn-dark"><a class="text-light" href="{% url 'home' %}">首页</a></button>
+                                <button type="button" class="btn btn-dark"><a class="text-light" href="{% url 'free' %}">免费代理</a></button>
+                                <button type="button" class="btn btn-dark"><a class="text-light" href="{% url 'api' %}">API接口</a></button>
+                                <button type="button" class="btn btn-dark"><a class="text-light" href="{% url 'help' %}">帮助中心</a></button>
+                                <button type="button" class="btn btn-dark"><a class="text-light" href="{% url 'contact' %}">联系我们</a></button>
+                                <div class="dropdown" style="margin-left: 30%">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        你好，{{ user.username }}
+                                    </button>
+                                    <div class="dropdown-menu bg-dark text-light" style="margin-top: 8%" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item text-light" href="{% url 'board' %}" id="MyAccount">我的账户</a>
+                                        <a class="dropdown-item text-light" href="{% url 'board' %}" id="MyOrder">我的订单</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-light" data-toggle="modal" data-target="#logout">退出登录</a>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <button type="button" class="btn btn-dark" style="margin-left: 10%"><a class="text-light" href="{% url 'home' %}">首页</a></button>
+                                <button type="button" class="btn btn-dark"><a class="text-light" href="{% url 'free' %}">免费代理</a></button>
+                                <button type="button" class="btn btn-dark"><a class="text-light" href="{% url 'help' %}">帮助中心</a></button>
+                                <button type="button" class="btn btn-dark"><a class="text-light" href="{% url 'contact' %}">联系我们</a></button>
+                                <div class="d-flex" style="margin-left: 40%">
+                                    <a class="btn btn-success" href="{% url 'login' %}">&nbsp&nbsp 登 &nbsp&nbsp 录 &nbsp&nbsp</a>
+                                    <a class="nav-item nav-link active"></a>
+                                    <a class="btn btn-primary" href="{% url 'signup' %}">&nbsp&nbsp 注 &nbsp&nbsp 册 &nbsp&nbsp</a>
+                                </div>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup"></div>
+            </div>
+        </nav>
+        {% block header %}
+
+        {% endblock %}
+    </header>
+
+
+    <body>
+        <!-- Modal Logout -->
+        <div class="modal fade align-bottom" id="logout" style="margin-top: 15%" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="card-header bg-dark text-light text-center">
+                        <b>退出登录</b>
+                        <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="card-body" style="padding: 5%; margin-top:2%">
+                          <a class="btn btn-lg btn-danger btn-block col-md-6 mx-auto" style="padding: 3%" href="{% url 'logout' %}">&nbsp 确 认 退 出 &nbsp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% block content %}
+
+        {% endblock %}
+    </body>
+
+
+    <footer>
+        <div class="container-fluid bg-dark text-light">
+            <div class="d-flex justify-content-center" style="padding: 3%">
+                Copyright  2017.All rights reserved. 京ICP备16011002号-2
+            </div>
+        </div>
+        {% block footer %}
+
+        {% endblock %}
+    </footer>
+
+</html>
