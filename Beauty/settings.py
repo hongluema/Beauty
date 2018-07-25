@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'Beauty.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "",
+        'NAME': "beauty",
         'USER': 'root',
         # 'PASSWORD': 'Y02389KSYHZ',
         'PASSWORD': '123456',
