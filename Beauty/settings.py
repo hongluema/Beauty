@@ -78,8 +78,15 @@ WSGI_APPLICATION = 'Beauty.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': "",
+        'USER': 'root',
+        # 'PASSWORD': 'Y02389KSYHZ',
+        'PASSWORD': '123456',
+        # 'HOST': '10.66.172.216',
+        'HOST': '106.15.177.204',
+        'PORT': '3306',
+        'OPTIONS': {'charset': 'utf8mb4'}
     }
 }
 
