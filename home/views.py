@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # encoding: utf-8
 from django.shortcuts import render, redirect
-from system.common import wrap, rand_str
-import os
-import json
-from home.models import User
+from system.common import wrap, rand_str, change_money
+import os, json, calendar
+from datetime import datetime, timedelta
+from datetime import date as dt
+from home.models import User, MonthCard, MonthCardLog
+from system.time_module import get_today_month
 
 # Create your views here.
 
@@ -60,5 +62,23 @@ def mark_is_free_experience(request, response, content):
     else:
         content["status"] = 401
         content["data"] = {"info": "该顾客还没有体验开业优惠，请扫码免费体验"}
+
+@wrap
+def buy_month_card(request, response, content):
+    """
+    购买月卡或者季卡或者升级季卡或者续费等
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    mobile = request.POST["mobile"]
+    price = request.POST["price"]
+    user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid":rand_str(16), "username":"匿名用户"})
+    today = dt.today()
+    after_one_month = get_today_month(year=today.year, mon=today.month, n=1)
+    MonthCard.objects.create(uid=user.uid, deadline=after_one_month, price=change_money(price))
+    content["status"] = 200
+    content["data"] = {"info":"购买月卡成功"}
 
 
