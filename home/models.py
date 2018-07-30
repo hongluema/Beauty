@@ -42,7 +42,7 @@ class User(models.Model):
 class MonthCard(models.Model):
     uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
     create_datetime = models.DateTimeField(verbose_name="购买月卡或者季卡的时间", auto_now_add=True)
-    deadline = models.DateTimeField(verbose_name="月卡或者季卡截止日期", null=True)
+    deadline = models.DateField(verbose_name="月卡或者季卡截止日期", null=True)
     price = models.DecimalField(verbose_name="价格", decimal_places=4, max_digits=12, default=198)
 
     class Meta:

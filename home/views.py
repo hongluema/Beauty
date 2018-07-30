@@ -72,12 +72,36 @@ def buy_month_card(request, response, content):
     :param content:
     :return:
     """
+    type_desc = {1: "购买月卡", 2: "购买季卡", 3: "升级季卡"}
+    type_price = {1: "198", 2: "500", 3: "302"}
     mobile = request.POST["mobile"]
     price = request.POST["price"]
+    type = int(request.POST.get("type",1))
     user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid":rand_str(16), "username":"匿名用户"})
     today = dt.today()
-    after_one_month = get_today_month(year=today.year, mon=today.month, n=1)
-    MonthCard.objects.create(uid=user.uid, deadline=after_one_month, price=change_money(price))
+    month_card = MonthCard.objects.filter(uid=user.uid).first()
+    if not month_card:
+        month_card = MonthCard.objects.create(uid=user.uid)
+
+    if month_card.deadline == None or month_card.deadline <= today:
+        year, mon = today.year, today.month
+    else:
+        year, month = month_card.deadline.year, month_card.deadline.month
+
+    if type == 1:
+        after_month = get_today_month(year=year, mon=month, n=1)
+        price = type_price[type]
+    elif type == 2:
+        after_month = get_today_month(year=year, mon=month, n=3)
+        price = type_price[type]
+    elif type == 3:
+        after_month = get_today_month(year=year, mon=month, n=2)
+        price = type_price[type]
+
+    month_card.deadline = after_month
+    month_card.price += change_money(price)
+    month_card.save()
+
     content["status"] = 200
     content["data"] = {"info":"购买月卡成功"}
 
