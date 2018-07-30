@@ -10,7 +10,7 @@ import httplib
 import urllib
 import functools
 import traceback as tb
-import redis
+# import redis
 from django.conf import settings
 import random
 import time
@@ -218,12 +218,12 @@ def wrap3(func):
     pass
 
 
-def get_redis(db=0):
-    global rds
-    # 线上redis
-    password = settings.REDIS_USER + ':' + settings.REDIS_PWD
-    default = redis.Redis(host=settings.REDIS_HOST, port=6379, db=db, password=password)
-    return rds.setdefault(db, default)
+# def get_redis(db=0):
+#     global rds
+#     # 线上redis
+#     password = settings.REDIS_USER + ':' + settings.REDIS_PWD
+#     default = redis.Redis(host=settings.REDIS_HOST, port=6379, db=db, password=password)
+#     return rds.setdefault(db, default)
 
 
 
@@ -345,21 +345,21 @@ def is_international_mobile(mobile):
         return True
 
 
-def get_or_increment_number_by_redis(store_id, pv_or_uv_date=None, get=True):
-    """
-    pv_or_uv_date的格式是这样的： pv_2018-05-03,pv_2018-05-03
-    获取或自增店铺的PV或UV访问量
-    :param store_id:
-    :param method:
-    :param get:
-    :return:
-    """
-    r = get_redis(db=1)
-    if r.hget(pv_or_uv_date, store_id) is None:
-        r.hset(pv_or_uv_date, store_id, 0)
-    if not get:  # 如果不是获取的话，就是添加访问次数
-        r.hincrby(pv_or_uv_date, store_id, amount=1)
-    return r.hget(pv_or_uv_date, store_id)
+# def get_or_increment_number_by_redis(store_id, pv_or_uv_date=None, get=True):
+#     """
+#     pv_or_uv_date的格式是这样的： pv_2018-05-03,pv_2018-05-03
+#     获取或自增店铺的PV或UV访问量
+#     :param store_id:
+#     :param method:
+#     :param get:
+#     :return:
+#     """
+#     r = get_redis(db=1)
+#     if r.hget(pv_or_uv_date, store_id) is None:
+#         r.hset(pv_or_uv_date, store_id, 0)
+#     if not get:  # 如果不是获取的话，就是添加访问次数
+#         r.hincrby(pv_or_uv_date, store_id, amount=1)
+#     return r.hget(pv_or_uv_date, store_id)
 
 
 def create_specification_id(content_id):
