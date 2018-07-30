@@ -83,7 +83,7 @@ def buy_month_card(request, response, content):
         month_card = MonthCard.objects.create(uid=user.uid)
 
     if month_card.deadline == None or month_card.deadline <= today:
-        year, mon = today.year, today.month
+        year, month = today.year, today.month
     else:
         year, month = month_card.deadline.year, month_card.deadline.month
 
