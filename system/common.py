@@ -310,7 +310,7 @@ def get_timestamp(d):
 
 
 def rand_str(n):  # 用于生成活动id
-    return uuid.uuid1().__str__()[:16]
+    return uuid.uuid1().__str__()[:n]
 
 
 def change_money(money, digit_length=2):  # 转换金额为decimal,digit_length代表的是小数点后几位小数

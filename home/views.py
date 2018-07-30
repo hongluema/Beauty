@@ -37,7 +37,7 @@ def free_experience(request, response, content):
         content["status"] = 401
         content["data"] = {"info":"不好意思，您已经免费体验过了"}
     else:
-        User.objects.get_or_create(mobile=mobile, defaults={"uid":rand_str(), "username":"匿名用户"})
+        User.objects.get_or_create(mobile=mobile, defaults={"uid":rand_str(16), "username":"匿名用户"})
         content["status"] = 200
         content["data"] = {"info": "请您免费体验翌芙莱开店优惠！祝您美美哒！"}
 
