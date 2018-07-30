@@ -19,7 +19,7 @@ from . import logger
 import geopy
 from home.models import RequestLogs
 from django.db.models import Func
-
+import uuid
 
 try:
     if 'devserver' not in settings.INSTALLED_APPS:
@@ -310,7 +310,7 @@ def get_timestamp(d):
 
 
 def rand_str(n):  # 用于生成活动id
-    return ''.join(random.choice(string.ascii_letters + string.digits) for _ in xrange(n))
+    return uuid.uuid1().__str__()[:16]
 
 
 def change_money(money, digit_length=2):  # 转换金额为decimal,digit_length代表的是小数点后几位小数
@@ -411,3 +411,5 @@ def datetime2timestamp(dt_time=datetime.now()):
 class DateFormat(Func):
     function = 'DATE_FORMAT'
     template = '%(function)s(%(expressions)s, %(format)s)'
+
+

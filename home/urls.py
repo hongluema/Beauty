@@ -6,4 +6,5 @@ from home import views
 urlpatterns = [
     url("^$", views.home_index, name="home"),
     url("^help/$", views.home_help, name="help"),
+    url("^free/experience/$", views.free_experience, name="free_experience"),
 ]

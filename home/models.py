@@ -26,11 +26,12 @@ class VipUserManager(models.Manager):
 
 class User(models.Model):
     uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
-    mobile = models.CharField(verbose_name="用户手机号", max_length=16, default="")
+    mobile = models.CharField(verbose_name="用户手机号", max_length=16, unique=True)
     username = models.CharField(verbose_name="用户名", max_length=255, default="")
     is_vip = models.BooleanField(verbose_name="是否是会员",default=0)
     create_datetime = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
-    deadline = models.DateTimeField(verbose_name="会员截止日期", auto_now_add=True)
+    deadline = models.DateTimeField(verbose_name="会员截止日期", null=True)
+    is_free_experience = models.BooleanField(verbose_name="是否已经免费体验过了开店优惠",default=0)
     objects = models.Manager()
     vipuser = VipUserManager()
 
