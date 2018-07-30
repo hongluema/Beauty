@@ -106,6 +106,15 @@ def buy_month_card(request, response, content):
                        "type_price":type_price}
 
 
+def free_experience_html(request):
+    """
+    免费体验html页面
+    :param request:
+    :return:
+    """
+    return render(request, "home/buy.html")
+
+
 def buy_html(request):
     """
     购买html页面
