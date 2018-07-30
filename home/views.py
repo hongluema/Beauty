@@ -41,4 +41,24 @@ def free_experience(request, response, content):
         content["status"] = 200
         content["data"] = {"info": "请您免费体验翌芙莱开店优惠！祝您美美哒！"}
 
+@wrap
+def mark_is_free_experience(request, response, content):
+    """
+    标记为已经体验过开业优惠
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    mobile = request.POST["mobile"]
+    user = User.objects.filter(mobile=mobile).first()
+    if user:
+        user.is_free_experience = 1
+        user.save()
+        content["status"] = 200
+        content["data"] = {"info": "已经成功标记为体验过开业优惠"}
+    else:
+        content["status"] = 401
+        content["data"] = {"info": "该顾客还没有体验开业优惠，请扫码免费体验"}
+
 
