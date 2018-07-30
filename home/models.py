@@ -43,7 +43,7 @@ class MonthCard(models.Model):
     uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
     create_datetime = models.DateTimeField(verbose_name="购买月卡或者季卡的时间", auto_now_add=True)
     deadline = models.DateTimeField(verbose_name="月卡或者季卡截止日期", null=True)
-    price = models.DecimalField(verbose_name="价格", max_digits=2, decimal_places=12, default=198)
+    price = models.DecimalField(verbose_name="价格", decimal_places=4, max_digits=12, default=198)
 
     class Meta:
         verbose_name = "月卡或者季卡信息表"
@@ -54,7 +54,7 @@ class MonthCardLog(models.Model):
     uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
     create_datetime = models.DateTimeField(verbose_name="购买月卡或者季卡的时间", auto_now_add=True)
     type = models.IntegerField(verbose_name="记录类型{1:购买月卡, 2:购买季卡, 3:升级季卡, 4:续费月卡, 5:续费季卡}", default=1)
-    price = models.DecimalField(verbose_name="价格", max_digits=2, decimal_places=12, default=198)
+    price = models.DecimalField(verbose_name="价格", decimal_places=4, max_digits=12, default=198)
 
     class Meta:
         verbose_name = "购买月卡或者季卡信息日志表"
