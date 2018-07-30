@@ -75,7 +75,6 @@ def buy_month_card(request, response, content):
     type_desc = {1: "购买月卡", 2: "购买季卡", 3: "升级季卡"}
     type_price = {1: "198", 2: "500", 3: "302"}
     mobile = request.POST["mobile"]
-    price = request.POST["price"]
     type = int(request.POST.get("type",1))
     user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid":rand_str(16), "username":"匿名用户"})
     today = dt.today()
@@ -103,6 +102,13 @@ def buy_month_card(request, response, content):
     month_card.save()
 
     content["status"] = 200
-    content["data"] = {"info":"购买月卡成功"}
+    content["data"] = {"info":"购买月卡成功", "deadline":str(month_card.deadline)}
 
 
+def buy_html(request):
+    """
+    购买html页面
+    :param request:
+    :return:
+    """
+    return render(request, "home/buy.html")
