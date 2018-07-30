@@ -102,7 +102,8 @@ def buy_month_card(request, response, content):
     month_card.save()
 
     content["status"] = 200
-    content["data"] = {"info":"购买月卡成功", "deadline":str(month_card.deadline)}
+    content["data"] = {"info":"购买月卡成功", "deadline":str(month_card.deadline), "type_desc":type_desc,\
+                       "type_price":type_price}
 
 
 def buy_html(request):
