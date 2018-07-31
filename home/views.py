@@ -5,7 +5,7 @@ from system.common import wrap, rand_str, change_money
 import os, json, calendar
 from datetime import datetime, timedelta
 from datetime import date as dt
-from home.models import User, MonthCard, MonthCardLog
+from home.models import User, MonthCard, MonthCardLog, MonthCardConsumeLog
 from system.time_module import get_today_month
 
 # Create your views here.
@@ -105,6 +105,34 @@ def buy_month_card(request, response, content):
     content["status"] = 200
     content["data"] = {"info":"购买月卡成功", "deadline":str(month_card.deadline), "type_desc":type_desc,\
                        "type_price":type_price}
+
+@wrap
+def create_month_card_consume_log(request, response, content):
+    """
+    记录月卡或者季卡持有者消费记录，每天只能消费一次
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    mobile = request.POST["mobile"]
+    user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
+    today = dt.today()
+    month_card_user = MonthCard.objects.filter(uid=user.uid, deadline__gte=today).first() #判断是不是有效的月卡持有者
+    if month_card_user:
+        month_card_consume_log = MonthCardConsumeLog.objects.filter(uid=user.uid, create_date=today) #判断该月卡或者季卡持有者今天有没有消费记录，如果有就不能在消费了
+        if month_card_consume_log:
+            content["status"] = 401
+            content["data"] = {"info":"月卡持有者每天只能享受一次免费养生艾灸，您已经享受过了哦！"}
+        else:
+            content["status"] = 200
+            content["data"] = {"info": "欢迎您享受养生艾灸，祝您健康愉快!"}
+    else:
+        content["status"] = 403
+        content["data"] = {"info": "您还不是月卡用户，请您咨询老板办理，优惠多多!"}
+
+
+
 
 
 def free_experience_html(request):

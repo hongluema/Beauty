@@ -51,7 +51,7 @@ class MonthCard(models.Model):
 
 
 class MonthCardLog(models.Model):
-    uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
+    uid = models.CharField(verbose_name="uid", max_length=16)
     create_datetime = models.DateTimeField(verbose_name="购买月卡或者季卡的时间", auto_now_add=True)
     type = models.IntegerField(verbose_name="记录类型{1:购买月卡, 2:购买季卡, 3:升级季卡, 4:续费月卡, 5:续费季卡}", default=1)
     price = models.DecimalField(verbose_name="价格", decimal_places=4, max_digits=12, default=198)
@@ -59,3 +59,12 @@ class MonthCardLog(models.Model):
     class Meta:
         verbose_name = "购买月卡或者季卡信息日志表"
         db_table = "month_card_log"
+
+class MonthCardConsumeLog(models.Model):
+    uid = models.CharField(verbose_name="uid", max_length=16)
+    create_datetime = models.DateTimeField(verbose_name="月卡或者季卡消费的时间", auto_now_add=True)
+    create_date = models.DateField(verbose_name="月卡或者季卡消费的时间", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "月卡或者季卡持有者消费记录,每天只能消费一次"
+        db_table = "month_card_consume_log"
