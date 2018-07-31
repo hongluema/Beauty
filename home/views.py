@@ -100,6 +100,7 @@ def buy_month_card(request, response, content):
     month_card.deadline = after_month
     month_card.price += change_money(price)
     month_card.save()
+    MonthCardLog.objects.create(uid=user.uid, type=type, price=change_money(price))
 
     content["status"] = 200
     content["data"] = {"info":"购买月卡成功", "deadline":str(month_card.deadline), "type_desc":type_desc,\
