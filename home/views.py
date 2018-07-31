@@ -39,9 +39,14 @@ def free_experience(request, response, content):
         content["status"] = 401
         content["data"] = {"info":"不好意思，您已经免费体验过了，每个人只可以免费体验一次哦!"}
     else:
-        User.objects.get_or_create(mobile=mobile, defaults={"uid":rand_str(16), "username":"匿名用户"})
-        content["status"] = 200
-        content["data"] = {"info": "请您免费体验翌芙莱开店优惠！祝您美美哒！"}
+        user = User.objects.filter(mobile=mobile).first()
+        if user:
+            content["status"] = 201
+            content["data"] = {"info": "您已经领取过开店优惠了，请您免费体验翌芙莱开店优惠！祝您美美哒！"}
+        else:
+            User.objects.create(mobile=mobile, uid=rand_str(16), username="匿名用户")
+            content["status"] = 200
+            content["data"] = {"info": "恭喜您成功领取开店优惠，请您免费体验翌芙莱开店优惠！祝您美美哒！"}
 
 @wrap
 def mark_is_free_experience(request, response, content):
