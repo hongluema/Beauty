@@ -126,6 +126,7 @@ def create_month_card_consume_log(request, response, content):
             content["data"] = {"info":"月卡持有者每天只能享受一次免费养生艾灸，您已经享受过了哦！"}
         else:
             content["status"] = 200
+            MonthCardConsumeLog.objects.create(uid=user.uid)
             content["data"] = {"info": "欢迎您享受养生艾灸，祝您健康愉快!"}
     else:
         content["status"] = 403
