@@ -5,10 +5,12 @@ from system.common import wrap, rand_str, change_money
 import os, json, calendar
 from datetime import datetime, timedelta
 from datetime import date as dt
-from home.models import User, MonthCard, MonthCardLog, MonthCardConsumeLog
+from home.models import User, MonthCard, VipUser, Consume
 from system.time_module import get_today_month
 
 # Create your views here.
+
+consume_type_desc = {1: "养生艾灸", 2: "深度补水面膜", 3: "专业祛斑", 5: "专业祛痘", 6: "充值"}
 
 def home_index(request):
     if request.method == "POST":
@@ -77,10 +79,10 @@ def buy_month_card(request, response, content):
     :param content:
     :return:
     """
-    type_desc = {1: "购买月卡", 2: "购买季卡", 3: "升级季卡"}
-    type_price = {1: "198", 2: "500", 3: "302"}
+    # type_desc = {1: "购买月卡", 2: "购买季卡", 3: "升级季卡"}
+    type_price = {8: "19800", 9: "50000", 10: "30200"}
     mobile = request.POST["mobile"]
-    type = int(request.POST.get("type",1))
+    type = int(request.POST.get("type",8))
     user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid":rand_str(16), "username":"匿名用户"})
     today = dt.today()
     month_card = MonthCard.objects.filter(uid=user.uid).first()
@@ -92,23 +94,23 @@ def buy_month_card(request, response, content):
     else:
         year, month = month_card.deadline.year, month_card.deadline.month
 
-    if type == 1:
+    if type == 8:
         after_month = get_today_month(year=year, mon=month, n=1)
         price = type_price[type]
-    elif type == 2:
+    elif type == 9:
         after_month = get_today_month(year=year, mon=month, n=3)
         price = type_price[type]
-    elif type == 3:
+    elif type == 10:
         after_month = get_today_month(year=year, mon=month, n=2)
         price = type_price[type]
 
     month_card.deadline = after_month
-    month_card.price += change_money(price)
+    month_card.price += int(price)
     month_card.save()
-    MonthCardLog.objects.create(uid=user.uid, type=type, price=change_money(price))
+    Consume.objects.create(uid=user.uid, type=type, consume_price=int(price))
 
     content["status"] = 200
-    content["data"] = {"info":"购买月卡成功", "deadline":str(month_card.deadline), "type_desc":type_desc,\
+    content["data"] = {"info":"购买月卡成功", "deadline":str(month_card.deadline), "consume_type_desc":consume_type_desc,\
                        "type_price":type_price}
 
 @wrap
@@ -123,21 +125,75 @@ def create_month_card_consume_log(request, response, content):
     mobile = request.POST["mobile"]
     user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
     today = dt.today()
-    month_card_user = MonthCard.objects.filter(uid=user.uid, deadline__gte=today).first() #判断是不是有效的月卡持有者
+    month_card_user = MonthCard.valid_month_vard.filter(uid=user.uid).first() #判断是不是有效的月卡持有者
     if month_card_user:
-        month_card_consume_log = MonthCardConsumeLog.objects.filter(uid=user.uid, create_date=today) #判断该月卡或者季卡持有者今天有没有消费记录，如果有就不能在消费了
+        month_card_consume_log = Consume.objects.filter(uid=user.uid, create_date=today, type=7) #判断该月卡或者季卡持有者今天有没有消费记录，如果有就不能在消费了
         if month_card_consume_log:
             content["status"] = 401
             content["data"] = {"info":"月卡持有者每天只能享受一次免费养生艾灸，您已经享受过了哦！"}
         else:
             content["status"] = 200
-            MonthCardConsumeLog.objects.create(uid=user.uid)
-            content["data"] = {"info": "欢迎您享受养生艾灸，祝您健康愉快!"}
+            Consume.objects.create(uid=user.uid, type=7, consume_price=0)
+            content["data"] = {"info": "欢迎您享受养生艾灸，祝您健康愉快!", "consume_type_desc":consume_type_desc}
     else:
         content["status"] = 403
-        content["data"] = {"info": "您还不是月卡用户，请您咨询老板办理，优惠多多!"}
+        content["data"] = {"info": "您还不是月卡用户或者月卡已经过期，请您咨询老板办理或续费，优惠多多!"}
 
 
+
+@wrap
+def vip_user_info(request, response, content):
+    """
+    获取或创建vip用户信息
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    if request.method == "GET":
+        mobile = request.GET["mobile"]
+        user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
+        vip_user = VipUser.objects.filter(uid=user.uid).first()
+        info = {}
+        if vip_user:
+            info["mobile"] = mobile
+            info["overage"] = vip_user.overage
+            info["total_money"] = vip_user.total_money
+            content["status"] = 200
+            content["data"] = {"info": "恭喜您成为会员! 会员福利多多"}
+        else:
+            content["status"] = 200
+            content["data"] = {"info": "恭喜您成为会员! 会员福利多多"}
+    else:
+        mobile = request.POST["mobile"]
+        price = int(request.POST["price"])
+        type = 6
+        user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
+        vip_user = VipUser.objects.get_or_create(uid=user.uid)
+        vip_user.uid = user.uid
+        vip_user.total_money += price
+        vip_user.overage += price
+        vip_user.save()
+        Consume.objects.create(uid=user.uid, consume_price=price, type=type)
+        content["status"] = 200
+        content["data"] = {"info":"恭喜您成为会员! 会员福利多多", "consume_type_desc":consume_type_desc}
+
+@wrap
+def create_consume_log(request, response, content):
+    """
+    记录顾客的消费
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    mobile = request.POST["mobile"]
+    price = int(request.POST["price"])
+    type = int(request.POST["type"])
+    user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
+    Consume.objects.create(uid=user.uid, consume_price=price, type=type)
+    content["status"] = 200
+    content["data"] = {"info": "谢谢您的光临", "consume_type_desc": consume_type_desc}
 
 
 

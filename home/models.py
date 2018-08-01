@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from datetime import date as dt
 
 # Create your models here.
 
@@ -19,52 +20,63 @@ class RequestLogs(models.Model):
         verbose_name = '调用记录表'
 
 
-class VipUserManager(models.Manager):
-    def get_queryset(self):
-        return super(VipUserManager, self).get_queryset().filter(is_vip=1)
+# class VipUserManager(models.Manager):
+#     def get_queryset(self):
+#         return super(VipUserManager, self).get_queryset().filter(is_vip=1)
 
 
 class User(models.Model):
     uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
     mobile = models.CharField(verbose_name="用户手机号", max_length=16, unique=True)
     username = models.CharField(verbose_name="用户名", max_length=255, default="")
-    is_vip = models.BooleanField(verbose_name="是否是会员",default=0)
+    # is_vip = models.BooleanField(verbose_name="是否是会员",default=0)
     create_datetime = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
-    deadline = models.DateTimeField(verbose_name="会员截止日期", null=True)
+    # deadline = models.DateTimeField(verbose_name="会员截止日期", null=True)
     is_free_experience = models.BooleanField(verbose_name="是否已经免费体验过了开店优惠",default=0)
-    objects = models.Manager()
-    vipuser = VipUserManager()
+    # objects = models.Manager()
+    # vipuser = VipUserManager()
 
     class Meta:
         verbose_name = "用户信息表"
         db_table = "user"
 
+class ValidMonthCardManager(models.Manager):
+    def get_queryset(self):
+        return super(ValidMonthCardManager, self).get_queryset().filter(deadline__gte=dt.today())
+
+
 class MonthCard(models.Model):
     uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
     create_datetime = models.DateTimeField(verbose_name="购买月卡或者季卡的时间", auto_now_add=True)
     deadline = models.DateField(verbose_name="月卡或者季卡截止日期", null=True)
-    price = models.DecimalField(verbose_name="价格", decimal_places=4, max_digits=12, default=198)
+    price = models.IntegerField(verbose_name="价格,以分为单位", default=19800)
+    object = models.Manager
+    valid_month_vard = ValidMonthCardManager()
 
     class Meta:
         verbose_name = "月卡或者季卡信息表"
         db_table = "month_card"
 
 
-class MonthCardLog(models.Model):
-    uid = models.CharField(verbose_name="uid", max_length=16)
-    create_datetime = models.DateTimeField(verbose_name="购买月卡或者季卡的时间", auto_now_add=True)
-    type = models.IntegerField(verbose_name="记录类型{1:购买月卡, 2:购买季卡, 3:升级季卡, 4:续费月卡, 5:续费季卡}", default=1)
-    price = models.DecimalField(verbose_name="价格", decimal_places=4, max_digits=12, default=198)
+class VipUser(models.Model):
+    uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
+    create_datetime = models.DateTimeField(verbose_name="注册vip用户的时间", auto_now_add=True)
+    create_date = models.DateField(verbose_name="注册vip用户的日期", auto_now_add=True)
+    total_money = models.IntegerField(verbose_name="vip用户总金额,以分为单位", default=0)
+    overage = models.IntegerField(verbose_name="vip用户余额,以分为单位", default=0)
 
     class Meta:
-        verbose_name = "购买月卡或者季卡信息日志表"
-        db_table = "month_card_log"
+        verbose_name = "vip用户表"
+        db_table = "vip_user"
 
-class MonthCardConsumeLog(models.Model):
+
+class Consume(models.Model):
     uid = models.CharField(verbose_name="uid", max_length=16)
-    create_datetime = models.DateTimeField(verbose_name="月卡或者季卡消费的时间", auto_now_add=True)
-    create_date = models.DateField(verbose_name="月卡或者季卡消费的时间", auto_now_add=True)
+    create_datetime = models.DateTimeField(verbose_name="消费的时间", auto_now_add=True)
+    create_date = models.DateField(verbose_name="消费的日期", auto_now_add=True)
+    consume_price = models.IntegerField(verbose_name="消费金额,以分为单位", default=0)
+    type = models.IntegerField(verbose_name="记录类型{1:养生艾灸, 2:深度补水面膜, 3:专业祛斑, 5:专业祛痘, 6:充值, 7:月卡或者季卡消费,8:购买月卡, 9:购买季卡, 10:升级季卡}", default=1)
 
     class Meta:
-        verbose_name = "月卡或者季卡持有者消费记录,每天只能消费一次"
-        db_table = "month_card_consume_log"
+        verbose_name = "顾客消费表"
+        db_table = "consume"
