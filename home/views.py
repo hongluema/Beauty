@@ -192,6 +192,10 @@ def create_consume_log(request, response, content):
     type = int(request.POST["type"])
     user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
     Consume.objects.create(uid=user.uid, consume_price=price, type=type)
+    vip_user = VipUser.objects.filter(uid=user.uid).first()
+    if vip_user.overage >= price:
+        vip_user.overage -= price
+        vip_user.save()
     content["status"] = 200
     content["data"] = {"info": "谢谢您的光临", "consume_type_desc": consume_type_desc}
 
