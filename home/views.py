@@ -160,10 +160,10 @@ def vip_user_info(request, response, content):
             info["overage"] = vip_user.overage
             info["total_money"] = vip_user.total_money
             content["status"] = 200
-            content["data"] = {"info": "恭喜您成为会员! 会员福利多多"}
+            content["data"] = {"info": "信息查询成功", "info":info}
         else:
-            content["status"] = 200
-            content["data"] = {"info": "恭喜您成为会员! 会员福利多多"}
+            content["status"] = 401
+            content["data"] = {"info": "您还不是会员，请了解会员详细!"}
     else:
         mobile = request.POST["mobile"]
         price = int(request.POST["price"])
