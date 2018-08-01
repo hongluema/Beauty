@@ -12,4 +12,6 @@ urlpatterns = [
     url("^buy/html/$", views.buy_html, name="buy_html"), #购买html页面
     url("^free/experience/html/$", views.free_experience_html, name="free_experience_html"), #免费体验html页面
     url("^create/month/card/consume/log/$", views.create_month_card_consume_log, name="create_month_card_consume_log"), #记录月卡或者季卡持有者消费记录，每天只能消费一次
+    url("^vip/user/info/$", views.vip_user_info, name="vip_user_info"), #获取或创建vip用户信息
+    url("^create/consume/log/$", views.create_consume_log, name="create_consume_log"), #记录顾客的消费
 ]
