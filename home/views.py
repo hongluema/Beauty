@@ -169,7 +169,7 @@ def vip_user_info(request, response, content):
         price = int(request.POST["price"])
         type = 6
         user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
-        vip_user = VipUser.objects.get_or_create(uid=user.uid)
+        vip_user, _ = VipUser.objects.get_or_create(uid=user.uid)
         vip_user.uid = user.uid
         vip_user.total_money += price
         vip_user.overage += price
