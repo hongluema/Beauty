@@ -10,7 +10,7 @@ from system.time_module import get_today_month
 
 # Create your views here.
 
-consume_type_desc = {1: "养生艾灸", 2: "深度补水面膜", 3: "专业祛斑", 5: "专业祛痘", 6: "充值"}
+consume_type_desc = {1: "养生艾灸", 2: "深度补水面膜", 3: "专业祛斑", 5: "专业祛痘", 6: "充值", 7:"月卡或者季卡消费",8:"购买月卡", 9:"购买季卡", 10:"升级季卡"}
 
 def home_index(request):
     if request.method == "POST":
@@ -193,11 +193,13 @@ def create_consume_log(request, response, content):
     user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
     Consume.objects.create(uid=user.uid, consume_price=price, type=type)
     vip_user = VipUser.objects.filter(uid=user.uid).first()
+    tag = False
     if vip_user.overage >= price:
         vip_user.overage -= price
         vip_user.save()
+        tag = True
     content["status"] = 200
-    content["data"] = {"info": "谢谢您的光临", "consume_type_desc": consume_type_desc}
+    content["data"] = {"info": "谢谢您的光临", "consume_type_desc": consume_type_desc, "vip_overage":vip_user.overage if tag else -1}
 
 
 
