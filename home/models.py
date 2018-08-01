@@ -50,7 +50,7 @@ class MonthCard(models.Model):
     create_datetime = models.DateTimeField(verbose_name="购买月卡或者季卡的时间", auto_now_add=True)
     deadline = models.DateField(verbose_name="月卡或者季卡截止日期", null=True)
     price = models.IntegerField(verbose_name="价格,以分为单位", default=19800)
-    object = models.Manager
+    object = models.Manager()
     valid_month_vard = ValidMonthCardManager()
 
     class Meta:
