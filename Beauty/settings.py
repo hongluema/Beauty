@@ -131,10 +131,13 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-
+"""
+STATIC_ROOT 和 STATICFILES_DIRS不能一样，STATIC_ROOT 必须包含STATICFILES_DIRS，因为执行
+python manage.py collectstatic命令的时候，会将STATICFILES_DIRS里的文件复制到STATIC_ROOT目录下
+"""
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') # nginx配置文件里面的static都是指向于BASE_DIR, 即/exdata/website/Beauty/
 STATICFILES_DIRS = [
-    # os.path.join(BASE_DIR, 'Beauty/static'),
-    os.path.join(BASE_DIR, 'xadmin/static'),
+    # os.path.join(BASE_DIR, 'Beauty/static'),# 这个用于admin， 静态文件加载的时候，执行python manage.py collectstatic命令，将Beauty/Beauty/下的static目录复制到STATIC_ROOT目录下的static
+    os.path.join(BASE_DIR, 'xadmin/static'), # 这个用于xadmin， 静态文件加载的时候，执行python manage.py collectstatic命令，将Beauty/xadmin/下的static目录复制到STATIC_ROOT目录下的static
 ]
