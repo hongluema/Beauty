@@ -3,6 +3,7 @@
 
 from django.apps import AppConfig
 
-class HomeConfig(AppConfig):
-    name = "home"
-    verbose_name = "用户信息" #增加这个字段，这个就是要显示的名称
+
+class UsersConfig(AppConfig):
+    name = 'users'
+    verbose_name = '用户信息'  #增加这个字段，这个就是要显示的名称
