@@ -3,7 +3,7 @@
 from django.contrib import admin
 from xadmin import views
 import xadmin
-from home.models import UserProfile, MonthCard, VipUser, Consume
+from home.models import MonthCard, VipUser, Consume
 
 class GlobalSetting(object):
     site_title = "fighting后台管理系统"
@@ -12,10 +12,10 @@ class GlobalSetting(object):
 
 xadmin.site.register(views.CommAdminView, GlobalSetting)
 
-class UserProfileAdmin(object):
-    list_display = ["uid", "mobile", "nick_name", "create_datetime", "is_free_experience"]
-    search_fields = ["mobile", "nick_name"]
-    list_filter = ["is_free_experience"]
+# class UserProfileAdmin(object):
+#     list_display = ["uid", "mobile", "nick_name", "create_datetime", "is_free_experience"]
+#     search_fields = ["mobile", "nick_name"]
+#     list_filter = ["is_free_experience"]
 
 
 class MonthCardAdmin(object):
@@ -33,7 +33,7 @@ class ConsumeAdmin(object):
     search_fields = ["create_datetime", "consume_price", "type"]
     list_filter = ["create_date", "consume_price", "type"]
 
-xadmin.site.register(UserProfile,UserProfileAdmin)
+# xadmin.site.register(UserProfile,UserProfileAdmin)
 xadmin.site.register(MonthCard,MonthCardAdmin)
 xadmin.site.register(VipUser,VipUserAdmin)
 xadmin.site.register(Consume,ConsumeAdmin)

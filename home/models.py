@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from datetime import date as dt
-from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -110,41 +109,41 @@ class RequestLogs(models.Model):
 #     def get_queryset(self):
 #         return super(VipUserManager, self).get_queryset().filter(is_vip=1)
 
-from django.contrib.auth.models import AbstractUser
+# from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 
-class UserProfile(AbstractUser):
-    uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
-    nick_name = models.CharField(max_length=50, verbose_name='昵称', default='')
-    birthday = models.DateField(null=True, blank=True, verbose_name='生日')
-    gender = models.CharField(max_length=6, choices=(('male', '男'), ('female', '女')), default='female', verbose_name='性别')
-    address = models.CharField(max_length=100, default='', verbose_name='地址')
-    mobile = models.CharField(max_length=11, null=True, blank=True, verbose_name='手机号')
-    image = models.ImageField(max_length=100, upload_to='image/%Y/%m', default='image?default.png', verbose_name='头像')
-    create_datetime = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
-    is_free_experience = models.BooleanField(verbose_name="是否已经免费体验过了开店优惠", default=0)
-
-    class Meta:
-        verbose_name = '用户信息'
-        verbose_name_plural = verbose_name
-        db_table = "user"
-
-
-# class User(models.Model):
+# class UserProfile(AbstractUser):
 #     uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
-#     mobile = models.CharField(verbose_name="用户手机号", max_length=16, unique=True)
-#     username = models.CharField(verbose_name="用户名", max_length=255, default="")
-#     # is_vip = models.BooleanField(verbose_name="是否是会员",default=0)
+#     nick_name = models.CharField(max_length=50, verbose_name='昵称', default='')
+#     birthday = models.DateField(null=True, blank=True, verbose_name='生日')
+#     gender = models.CharField(max_length=6, choices=(('male', '男'), ('female', '女')), default='female', verbose_name='性别')
+#     address = models.CharField(max_length=100, default='', verbose_name='地址')
+#     mobile = models.CharField(max_length=11, null=True, blank=True, verbose_name='手机号')
+#     image = models.ImageField(max_length=100, upload_to='image/%Y/%m', default='image?default.png', verbose_name='头像')
 #     create_datetime = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
-#     # deadline = models.DateTimeField(verbose_name="会员截止日期", null=True)
-#     is_free_experience = models.BooleanField(verbose_name="是否已经免费体验过了开店优惠",default=0)
-#     # objects = models.Manager()
-#     # vipuser = VipUserManager()
+#     is_free_experience = models.BooleanField(verbose_name="是否已经免费体验过了开店优惠", default=0)
 #
 #     class Meta:
-#         verbose_name = "用户信息表"
+#         verbose_name = '用户信息'
+#         verbose_name_plural = verbose_name
 #         db_table = "user"
+
+
+class User(models.Model):
+    uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
+    mobile = models.CharField(verbose_name="用户手机号", max_length=16, unique=True)
+    username = models.CharField(verbose_name="用户名", max_length=255, default="")
+    # is_vip = models.BooleanField(verbose_name="是否是会员",default=0)
+    create_datetime = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
+    # deadline = models.DateTimeField(verbose_name="会员截止日期", null=True)
+    is_free_experience = models.BooleanField(verbose_name="是否已经免费体验过了开店优惠",default=0)
+    # objects = models.Manager()
+    # vipuser = VipUserManager()
+
+    class Meta:
+        verbose_name = "用户信息表"
+        db_table = "user"
 
 class ValidMonthCardManager(models.Manager):
     def get_queryset(self):
