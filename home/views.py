@@ -261,6 +261,8 @@ class UserListView1(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gen
     """
     列出所有的用户或者创建用户
     """
+    response = Response()
+    response["Access-Control-Allow-Origin"] = "*"
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = StandardResultsSetPagination # 有了这个就不用在settings.py中设置REST_FRAMEWORK里的设置了
@@ -270,17 +272,13 @@ class UserListView1(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gen
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
-    response = Response()
-    response["Access-Control-Allow-Origin"] = "*"
-    response['Cache-Control'] = 'no-cache'
 
 class UserListViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     """
     列出所有的用户或者创建用户
     """
+    response = Response()
+    response["Access-Control-Allow-Origin"] = "*"
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = StandardResultsSetPagination # 有了这个就不用在settings.py中设置REST_FRAMEWORK里的设置了
-    response = Response()
-    response["Access-Control-Allow-Origin"] = "*"
-    response['Cache-Control'] = 'no-cache'
