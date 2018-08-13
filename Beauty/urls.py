@@ -17,9 +17,12 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 import xadmin
+from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
     url(r'^admin/', xadmin.site.urls),
     url(r'^account/', include('account.urls')),
     url(r'^home/', include('home.urls')),
+    url(r'^docs/', include_docs_urls(title="美容养生")), # 切记这里不能写成docs/$，不能加$符号，不然会报错
+    url(r'^api-auth/', include('rest_framework.urls')),
 ]

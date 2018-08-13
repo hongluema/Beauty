@@ -7,6 +7,17 @@ from datetime import datetime, timedelta
 from datetime import date as dt
 from home.models import User, MonthCard, VipUser, Consume
 from system.time_module import get_today_month
+from django.core import serializers
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from home.models import User
+from home.serializer import UserSerializer
+from rest_framework import mixins
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import viewsets
+from django.http import Http404
 
 # Create your views here.
 
@@ -198,6 +209,9 @@ def create_consume_log(request, response, content):
         vip_user.overage -= price
         vip_user.save()
         tag = True
+
+    vip_users = VipUser.objects.all()
+    vip_users = json.loads(serializers.serialize("json", vip_users)) # 序列化
     content["status"] = 200
     content["data"] = {"info": "谢谢您的光临", "consume_type_desc": consume_type_desc, "vip_overage":vip_user.overage if tag else -1}
 
@@ -219,3 +233,49 @@ def buy_html(request):
     :return:
     """
     return render(request, "home/buy.html")
+
+class UserListView(APIView):
+    """
+    列出所有的用户或者创建用户
+    """
+    def get(self, request, format=None):
+        users = User.objects.all()
+        user_serializer = UserSerializer(users, many=True)
+        return Response(user_serializer.data)
+
+    def post(self, request, format=None):
+        user_serializer = UserSerializer(data=request.data)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            return Response(user_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'item'
+    page_query_param = 'page'
+    max_page_size = 100
+
+class UserListView1(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    """
+    列出所有的用户或者创建用户
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    pagination_class = StandardResultsSetPagination # 有了这个就不用在settings.py中设置REST_FRAMEWORK里的设置了
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class UserListViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    """
+    列出所有的用户或者创建用户
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    pagination_class = StandardResultsSetPagination # 有了这个就不用在settings.py中设置REST_FRAMEWORK里的设置了

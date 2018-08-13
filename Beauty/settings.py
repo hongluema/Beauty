@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'xadmin',
     'crispy_forms',
+    'coreapi',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -141,3 +142,8 @@ STATICFILES_DIRS = [
     # os.path.join(BASE_DIR, 'Beauty/static'),# 这个用于admin， 静态文件加载的时候，执行python manage.py collectstatic命令，将Beauty/Beauty/下的static目录复制到STATIC_ROOT目录下的static
     os.path.join(BASE_DIR, 'xadmin/static'), # 这个用于xadmin， 静态文件加载的时候，执行python manage.py collectstatic命令，将Beauty/xadmin/下的static目录复制到STATIC_ROOT目录下的static
 ]
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+#     'PAGE_SIZE': 2
+# }
