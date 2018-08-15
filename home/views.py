@@ -335,7 +335,7 @@ def join_activity(request, response, content):
     activity_id = request.POST["activity_id"]
     user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
     activity = Activity.objects.get(activity_id=activity_id) #活动
-    join_activity, _ = UserJoinActivity.objects.get_or_create(uid=user.uid, status=0, defaults={"numbers":activity.numbers, "overage_numbers":activity.numbers,\
+    join_activity, _ = UserJoinActivity.objects.get_or_create(uid=user.uid, status=0, activity_id=activity.activity_id, defaults={"numbers":activity.numbers, "overage_numbers":activity.numbers,\
                                                                              "activity_name":activity.activity_name, "activity_explain":activity.activity_explain})
     if join_activity.numbers < 0:
         info = "恭喜您参加{}活动，祝您早日美丽动人".format(activity.activity_name)
