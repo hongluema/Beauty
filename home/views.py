@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 from django.shortcuts import render, redirect
-from system.common import wrap, rand_str, change_money
+from system.common import wrap, rand_str, change_money, groupby_field
 import os, json, calendar
 from datetime import datetime, timedelta
 from datetime import date as dt
@@ -19,6 +19,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import viewsets
 from django.db.models import F, Q, Count, Sum
 from django.http import Http404
+
 
 # Create your views here.
 
@@ -404,4 +405,23 @@ def consume_log(request, response, content):
         consume["create_datetime"] = datetime.strftime(consume["create_datetime"], "%Y-%m-%d %H:%M:%S")
     content["status"] = 200
     content["data"] = {"consumes": list(consumes), "consume_type_desc": consume_type_desc}
+
+@wrap
+def consume_static(request, response, content):
+    """
+    消费统计，后台看的
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    rows = Consume.objects.values().order_by("create_datetime")
+    data = groupby_field(rows, "create_date")
+    for item in data["items"]:
+        item["create_datetime"] = datetime.strftime(item["create_datetime"], "%Y-%m-%d %H:%M:%S")
+        item["create_date"] = str(item["create_date"])
+    content["status"] = 200
+    content["data"] = {"info": data, "consume_type_desc": consume_type_desc}
+
+
 

@@ -412,4 +412,27 @@ class DateFormat(Func):
     function = 'DATE_FORMAT'
     template = '%(function)s(%(expressions)s, %(format)s)'
 
+from itertools import groupby
+from operator import itemgetter, attrgetter
+
+def groupby_field(rows, field, field_name="date",is_attr=False):
+    """
+    根据某个字段分组，默认是对象的属性，其他情况是字典的一个字段
+    :param items:
+    :param attr:
+    :return:
+    """
+    if is_attr:
+        key=attrgetter(field)
+    else:
+        key = itemgetter(field)
+    data = {}
+    items = []
+    for field, group in groupby(rows, key=key):
+        data[field_name] = str(field)
+        items.append(list(group))
+        data["numbers"] = len(group)
+        data["items"] = items
+    return data
+
 
