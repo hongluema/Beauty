@@ -368,7 +368,7 @@ def user_join_activities_info(request, response, content):
                 activity["info"] = "您已经参加P{}活动，还有{}次护理未做，请及时进店享受".format(activity["activity_name"], activity["overage_numbers"])
             not_complete.append(activity)
         else:
-            activity["info"] = "{您已经体验完{}活动，如果喜欢可以去店里再次参加本活动".format(activity["activity_name"])
+            activity["info"] = "您已经体验完{}活动，如果喜欢可以去店里再次参加本活动".format(activity["activity_name"])
             complete.append(activity)
     content["status"] = 200
     content["data"] = {"complete":complete, "not_complete":not_complete}
