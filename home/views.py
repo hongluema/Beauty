@@ -399,9 +399,9 @@ def consume_log(request, response, content):
     """
     mobile = request.GET["mobile"]
     user = User.objects.get(mobile=mobile)
-    consumes = Consume.objects.filter(uid=user.uid).values("create_date", "consume_price", "type").order_by("-create_datetime")
+    consumes = Consume.objects.filter(uid=user.uid).values("create_datetime", "consume_price", "type").order_by("-create_datetime")
     for consume in consumes:
-        consume["create_date"] = datetime.strftime(consume["create_date"], "%Y-%m-%d %H:%M:%S")
+        consume["create_datetime"] = datetime.strftime(consume["create_datetime"], "%Y-%m-%d %H:%M:%S")
     content["status"] = 200
-    content["data"] = {"consumes": consumes}
+    content["data"] = {"consumes": list(consumes)}
 
