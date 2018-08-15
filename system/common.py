@@ -427,12 +427,10 @@ def groupby_field(rows, field, field_name="date",is_attr=False):
     else:
         key = itemgetter(field)
     data = {}
-    items = []
     for field, group in groupby(rows, key=key):
         data[field_name] = str(field)
-        items.append(list(group))
         data["numbers"] = len(list(group))
-        data["items"] = items
+        data["items"] = list(group)
     return data
 
 
