@@ -206,7 +206,7 @@ def create_consume_log(request, response, content):
     user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
     Consume.objects.create(uid=user.uid, activity_id=activity_id, consume_price=price, type=type)
     if activity_id:
-        join_activity = UserJoinActivity.objects.get(uid=user.uid, activity_id=activity_id, status=0) #用户参加的活动
+        join_activity = UserJoinActivity.objects.filter(uid=user.uid, activity_id=activity_id, status=0) #用户参加的活动
         if join_activity:
             join_activity.overage_numbers -= 1
             if join_activity.overage_numbers == 0: #标记为已经体验完成
