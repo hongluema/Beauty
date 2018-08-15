@@ -205,6 +205,7 @@ class VipUser(models.Model):
 
 class Consume(models.Model):
     uid = models.CharField(verbose_name="uid", max_length=16)
+    activity_id = models.CharField(verbose_name="活动id", max_length=16, default="")
     create_datetime = models.DateTimeField(verbose_name="消费的时间", auto_now_add=True)
     create_date = models.DateField(verbose_name="消费的日期", auto_now_add=True)
     consume_price = models.IntegerField(verbose_name="消费金额,以分为单位", default=0)

@@ -200,21 +200,36 @@ def create_consume_log(request, response, content):
     :return:
     """
     mobile = request.POST["mobile"]
-    price = int(request.POST["price"])
+    activity_id = request.POST.get("activity_id","")
+    price = int(request.POST.get("price",0))
     type = int(request.POST["type"])
     user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
-    Consume.objects.create(uid=user.uid, consume_price=price, type=type)
-    vip_user = VipUser.objects.filter(uid=user.uid).first()
-    tag = False
-    if vip_user.overage >= price:
-        vip_user.overage -= price
-        vip_user.save()
-        tag = True
+    Consume.objects.create(uid=user.uid, activity_id=activity_id, consume_price=price, type=type)
+    if activity_id:
+        join_activity = UserJoinActivity.objects.get(uid=user.uid, activity_id=activity_id) #用户参加的活动
+        if join_activity:
+            join_activity.overage_numbers -= 1
+            if join_activity.overage_numbers == 0: #标记为已经体验完成
+                   join_activity.status = 1
+            join_activity.save()
+            content["status"] = 200
+            content["data"] = {"info": "恭喜您参加{}活动, 您还有{}次护理未享受".format(join_activity.activity_name, join_activity.overage_numbers), "consume_type_desc": consume_type_desc}
+        else:
+            content["status"] = 401
+            content["data"] = {"info":"不好意思，您还未参加该活动，请咨询店主，办理参加！", "consume_type_desc": consume_type_desc}
+    else:
+        content["status"] = 200
+        content["data"] = {"info": "谢谢您的光临", "consume_type_desc": consume_type_desc}
+    # vip_user = VipUser.objects.filter(uid=user.uid).first()
+    # tag = False
+    # if vip_user.overage >= price:
+    #     vip_user.overage -= price
+    #     vip_user.save()
+    #     tag = True
 
-    vip_users = VipUser.objects.all()
-    vip_users = json.loads(serializers.serialize("json", vip_users)) # 序列化
-    content["status"] = 200
-    content["data"] = {"info": "谢谢您的光临", "consume_type_desc": consume_type_desc, "vip_overage":vip_user.overage if tag else -1}
+    # vip_users = VipUser.objects.all()
+    # vip_users = json.loads(serializers.serialize("json", vip_users)) # 序列化
+
 
 
 
