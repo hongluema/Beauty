@@ -387,3 +387,21 @@ def user_join_activities_info(request, response, content):
             complete.append(activity)
     content["status"] = 200
     content["data"] = {"complete":complete, "not_complete":not_complete}
+
+@wrap
+def consume_log(request, response, content):
+    """
+    消费者消费记录
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    mobile = request.GET["mobile"]
+    user = User.objects.get(mobile=mobile)
+    consumes = Consume.objects.filter(uid=user.uid).values("create_date", "consume_price", "type").order_by("-create_datetime")
+    for consume in consumes:
+        consume["create_date"] = datetime.strftime(consume["create_date"], "%Y-%m-%d %H:%M:%S")
+    content["status"] = 200
+    content["data"] = {"consumes": consumes}
+
