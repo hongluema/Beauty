@@ -340,7 +340,7 @@ def join_activity(request, response, content):
     if join_activity.numbers < 0:
         info = "恭喜您参加{}活动，祝您早日美丽动人".format(activity.activity_name)
     else:
-        info = "恭喜您参加{}活动".format(activity.activity_name) if _ else "您已经参加P{}活动，还有{}次护理未做，请及时进店享受".format(activity.activity_name, join_activity.overage_numbers)
+        info = "恭喜您参加{}活动".format(activity.activity_name) if _ else "您已经参加{}活动，还有{}次护理未做，请及时进店享受".format(activity.activity_name, join_activity.overage_numbers)
     content["status"] = 200
     content["data"] = {"info":info}
 
@@ -365,7 +365,7 @@ def user_join_activities_info(request, response, content):
             if activity["overage_numbers"] < 0:
                 activity["info"] = "恭喜您参加{}活动，祝您早日美丽动人".format(activity["activity_name"])
             else:
-                activity["info"] = "{您已经参加P{}活动，还有{}次护理未做，请及时进店享受".format(activity["activity_name"], activity["overage_numbers"])
+                activity["info"] = "您已经参加P{}活动，还有{}次护理未做，请及时进店享受".format(activity["activity_name"], activity["overage_numbers"])
             not_complete.append(activity)
         else:
             activity["info"] = "{您已经体验完{}活动，如果喜欢可以去店里再次参加本活动".format(activity["activity_name"])
