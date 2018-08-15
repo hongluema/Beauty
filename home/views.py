@@ -308,7 +308,7 @@ def activityView(request, response, content):
     :return:
     """
     if request.method == "GET":
-        activities = Activity.objects.filter(status=1).values() #还有效的活动
+        activities = Activity.objects.filter(status=1).values().order_by("-create_datetime") #还有效的活动
         for activity in activities:
             activity["create_datetime"] = datetime.strftime(activity["create_datetime"], "%Y-%m-%d %H:%M:%S")
         content["status"] = 200
@@ -340,6 +340,35 @@ def join_activity(request, response, content):
     if join_activity.numbers < 0:
         info = "恭喜您参加{}活动，祝您早日美丽动人".format(activity.activity_name)
     else:
-        info = "恭喜您参加{}活动".format(activity.activity_name) if _ else "您已经参加P{}活动，还有{}次护理未做，请及时享受".format(activity.activity_name, join_activity.overage_numbers)
+        info = "恭喜您参加{}活动".format(activity.activity_name) if _ else "您已经参加P{}活动，还有{}次护理未做，请及时进店享受".format(activity.activity_name, join_activity.overage_numbers)
     content["status"] = 200
     content["data"] = {"info":info}
+
+
+@wrap
+def user_join_activities_info(request, response, content):
+    """
+    用户参加活动明细
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    mobile = request.POST["mobile"]
+    user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
+    join_activities = UserJoinActivity.objects.filter(uid=user.uid).values().order_by("-create_datetime") #参加的所有活动
+    complete = [] #已体验完
+    not_complete = [] #未体验完
+    for activity in join_activities:
+        activity["create_datetime"] = datetime.strftime(activity["create_datetime"], "%Y-%m-%d %H:%M:%S")
+        if activity["status"] == 0: #未体验完
+            if activity["overage_numbers"] < 0:
+                activity["info"] = "恭喜您参加{}活动，祝您早日美丽动人".format(activity["activity_name"])
+            else:
+                activity["info"] = "{您已经参加P{}活动，还有{}次护理未做，请及时进店享受".format(activity["activity_name"], activity["overage_numbers"])
+            not_complete.append(activity)
+        else:
+            activity["info"] = "{您已经体验完{}活动，如果喜欢可以去店里再次参加本活动".format(activity["activity_name"])
+            complete.append(activity)
+    content["status"] = 200
+    content["data"] = {"complete":complete, "not_complete":not_complete}

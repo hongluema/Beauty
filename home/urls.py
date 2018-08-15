@@ -26,4 +26,5 @@ urlpatterns = [
     url("^create/consume/log/$", views.create_consume_log, name="create_consume_log"), #记录顾客的消费
     url("^join/activity/$", views.join_activity, name="join_activity"), #用户参加活动
     url("^activity/$", views.activityView, name="activityView"), #获取或创建活动
+    url("^user/join/activities/info/$", views.user_join_activities_info, name="user_join_activities_info"), #用户参加活动明细
 ]
