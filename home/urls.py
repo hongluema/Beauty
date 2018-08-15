@@ -1,11 +1,12 @@
 # encoding: utf-8
 from django.conf.urls import url, include
 from home import views
-from home.views import UserListView, UserListView1, UserListViewSet
+from home.views import UserListView, UserListView1, UserListViewSet, MonthCardViewset
 
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
-router.register(r'users', UserListViewSet)
+router.register(r'users', UserListViewSet, base_name="users")
+router.register(r'monthCard', MonthCardViewset, base_name="monthCard")
 
 
 
@@ -23,4 +24,6 @@ urlpatterns = [
     url("^create/month/card/consume/log/$", views.create_month_card_consume_log, name="create_month_card_consume_log"), #记录月卡或者季卡持有者消费记录，每天只能消费一次
     url("^vip/user/info/$", views.vip_user_info, name="vip_user_info"), #获取或创建vip用户信息
     url("^create/consume/log/$", views.create_consume_log, name="create_consume_log"), #记录顾客的消费
+    url("^join/activity/$", views.join_activity, name="join_activity"), #用户参加活动
+    url("^activity/$", views.activityView, name="activityView"), #获取或创建活动
 ]

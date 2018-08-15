@@ -145,10 +145,38 @@ class User(models.Model):
         verbose_name = "用户信息表"
         db_table = "user"
 
+class Activity(models.Model):
+    activity_id = models.CharField(verbose_name="活动id", max_length=16, primary_key=True)
+    create_datetime = models.DateTimeField(verbose_name="活动创建时间", auto_now_add=True)
+    numbers = models.IntegerField(verbose_name="体验次数, -1代表的是无限次数", default=10)
+    activity_name = models.TextField(verbose_name="活动名称")
+    activity_explain = models.TextField(verbose_name="活动说明", default="")
+    status = models.BooleanField(verbose_name="活动是否有效", default=1)
+
+    class Meta:
+        verbose_name = "活动"
+        db_table = "activity"
+
+
+class UserJoinActivity(models.Model):
+    uid = models.CharField(verbose_name="uid", max_length=16)
+    activity_id = models.CharField(verbose_name="活动id", max_length=16)
+    create_datetime = models.DateTimeField(verbose_name="参加活动时间", auto_now_add=True)
+    numbers = models.IntegerField(verbose_name="活动总体验次数", default=10)
+    overage_numbers = models.IntegerField(verbose_name="活动剩余体验次数", default=10)
+    activity_name = models.TextField(verbose_name="活动名称")
+    activity_explain = models.TextField(verbose_name="活动说明", default="")
+    status = models.BooleanField(verbose_name="活动是否已经体验完", default=0)
+
+    class Meta:
+        verbose_name = "活动"
+        db_table = "user_join_activity"
+
+
+
 class ValidMonthCardManager(models.Manager):
     def get_queryset(self):
         return super(ValidMonthCardManager, self).get_queryset().filter(deadline__gte=dt.today())
-
 
 class MonthCard(models.Model):
     uid = models.CharField(verbose_name="uid", max_length=16, primary_key=True)
@@ -180,7 +208,7 @@ class Consume(models.Model):
     create_datetime = models.DateTimeField(verbose_name="消费的时间", auto_now_add=True)
     create_date = models.DateField(verbose_name="消费的日期", auto_now_add=True)
     consume_price = models.IntegerField(verbose_name="消费金额,以分为单位", default=0)
-    type = models.IntegerField(verbose_name="记录类型{1:养生艾灸, 2:深度补水面膜, 3:专业祛斑, 5:专业祛痘, 6:充值, 7:月卡或者季卡消费,8:购买月卡, 9:购买季卡, 10:升级季卡}", default=1)
+    type = models.IntegerField(verbose_name="记录类型{1:养生艾灸, 2:面部深层补水护理, 3:专业祛斑, 5:专业祛痘, 6:充值, 7:月卡或者季卡消费,8:购买月卡, 9:购买季卡, 10:升级季卡}", default=1)
 
     class Meta:
         verbose_name = "顾客消费表"

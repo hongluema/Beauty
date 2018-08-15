@@ -5,18 +5,19 @@ from system.common import wrap, rand_str, change_money
 import os, json, calendar
 from datetime import datetime, timedelta
 from datetime import date as dt
-from home.models import User, MonthCard, VipUser, Consume
+from home.models import User, MonthCard, VipUser, Consume, Activity, UserJoinActivity
 from system.time_module import get_today_month
 from django.core import serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from home.models import User
-from home.serializer import UserSerializer
+from home.serializer import UserSerializer, MonthCardSerializer
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import viewsets
+from django.db.models import F, Q, Count, Sum
 from django.http import Http404
 
 # Create your views here.
@@ -261,8 +262,6 @@ class UserListView1(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gen
     """
     列出所有的用户或者创建用户
     """
-    response = Response()
-    response["Access-Control-Allow-Origin"] = "*"
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = StandardResultsSetPagination # 有了这个就不用在settings.py中设置REST_FRAMEWORK里的设置了
@@ -277,8 +276,70 @@ class UserListViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.G
     """
     列出所有的用户或者创建用户
     """
-    response = Response()
-    response["Access-Control-Allow-Origin"] = "*"
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = StandardResultsSetPagination # 有了这个就不用在settings.py中设置REST_FRAMEWORK里的设置了
+    def get_queryset(self):
+        mobile = self.request.query_params.get("mobile", "18519105640") #前端传来的电话号码
+        if mobile == "11111111111":
+            return self.queryset
+        return self.queryset.filter(mobile=mobile).values("uid", "mobile")
+
+class MonthCardViewset(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """
+    list:
+        获取月卡列表数据
+    create:
+        创建月卡数据
+    retrieve:
+        获取月卡用户详情
+    """
+    queryset = MonthCard.objects.all()
+    serializer_class = MonthCardSerializer
+    pagination_class = StandardResultsSetPagination
+
+@wrap
+def activityView(request, response, content):
+    """
+    获取或创建活动
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    if request.method == "GET":
+        activities = Activity.objects.filter(status=1).values() #还有效的活动
+        for activity in activities:
+            activity["create_datetime"] = datetime.strftime(activity["create_datetime"], "%Y-%m-%d %H:%M:%S")
+        content["status"] = 200
+        content["data"] = {"activities": list(activities)}
+    else:
+        activity_id = rand_str(6) #活动id
+        numbers = int(request.POST.get("numbers", -1)) # -1代表的是不限次数
+        activity_name = request.POST["activity_name"] # 活动名字
+        activity_explain = request.POST["activity_explain"] # 活动说明
+        activity = Activity.objects.create(activity_id=activity_id, numbers=numbers, activity_name=activity_name, activity_explain=activity_explain)
+        content["status"] = 200
+        content["data"] = {"info":"创建活动成功"}
+
+@wrap
+def join_activity(request, response, content):
+    """
+    用户参加活动
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    mobile = request.POST["mobile"]
+    activity_id = request.POST["activity_id"]
+    user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
+    activity = Activity.objects.get(activity_id=activity_id) #活动
+    join_activity, _ = UserJoinActivity.objects.get_or_create(uid=user.uid, status=0, defaults={"numbers":activity.numbers, "overage_numbers":activity.numbers,\
+                                                                             "activity_name":activity.activity_name, "activity_explain":activity.activity_explain})
+    if join_activity.numbers < 0:
+        info = "恭喜您参加{}活动，祝您早日美丽动人".format(activity.activity_name)
+    else:
+        info = "恭喜您参加{}活动".format(activity.activity_name) if _ else "您已经参加P{}活动，还有{}次护理未做，请及时享受".format(activity.activity_name, join_activity.overage_numbers)
+    content["status"] = 200
+    content["data"] = {"info":info}
