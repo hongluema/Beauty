@@ -403,5 +403,5 @@ def consume_log(request, response, content):
     for consume in consumes:
         consume["create_datetime"] = datetime.strftime(consume["create_datetime"], "%Y-%m-%d %H:%M:%S")
     content["status"] = 200
-    content["data"] = {"consumes": list(consumes)}
+    content["data"] = {"consumes": list(consumes), "consume_type_desc": consume_type_desc}
 
