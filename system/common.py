@@ -415,7 +415,7 @@ class DateFormat(Func):
 from itertools import groupby
 from operator import itemgetter, attrgetter
 
-def groupby_field(rows, field, field_name="date", turn_str=None):
+def groupby_field(rows, field, field_name="date", turn_str=None, sort_field="create_datetime"):
     """
     根据某个字段分组，默认是对象的属性，其他情况是字典的一个字段
     :param items:
@@ -426,7 +426,7 @@ def groupby_field(rows, field, field_name="date", turn_str=None):
         turn_str = []
 
     rows = list(rows)
-    rows.sort(key=itemgetter(field), reverse=True)
+    rows.sort(key=itemgetter(sort_field), reverse=True)
 
     key = itemgetter(field)
 
@@ -434,7 +434,7 @@ def groupby_field(rows, field, field_name="date", turn_str=None):
 
     for field, group in groupby(rows, key=key):
         group = list(group)
-        group.sort(key=itemgetter(field), reverse=True)
+        group.sort(key=itemgetter(sort_field), reverse=True)
         if turn_str:
             for g in group:
                 for i in turn_str:

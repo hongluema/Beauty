@@ -416,7 +416,7 @@ def consume_static(request, response, content):
     :return:
     """
     rows = Consume.objects.values().order_by("create_datetime") #这里排序没什么用，在groupby里面会重新排序,所以groupby里面要重新用sort排序
-    data = groupby_field(rows, field="create_date", turn_str=["create_date", "create_datetime"])
+    data = groupby_field(rows, field="create_date", turn_str=["create_date", "create_datetime"], sort_field="create_datetime")
     content["status"] = 200
     content["data"] = {"info": data, "consume_type_desc": consume_type_desc}
 
