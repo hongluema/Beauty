@@ -426,7 +426,7 @@ def groupby_field(rows, field, field_name="date", turn_str=None):
         turn_str = []
 
     rows = list(rows)
-    rows.sort(key=itemgetter(field))
+    rows.sort(key=itemgetter(field), reverse=True)
 
     key = itemgetter(field)
 
