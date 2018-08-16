@@ -415,20 +415,29 @@ class DateFormat(Func):
 from itertools import groupby
 from operator import itemgetter, attrgetter
 
-def groupby_field(rows, field, field_name="date",is_attr=False):
+def groupby_field(rows, field, field_name="date", turn_str=None,is_attr=False):
     """
     根据某个字段分组，默认是对象的属性，其他情况是字典的一个字段
     :param items:
     :param attr:
     :return:
     """
+    if turn_str is None:
+        turn_str = []
+
     if is_attr:
         key=attrgetter(field)
     else:
         key = itemgetter(field)
+
     data = []
+
     for field, group in groupby(rows, key=key):
         group = list(group)
+        if turn_str:
+            for g in group:
+                for i in turn_str:
+                    g[i] = str(g[i])
         data.append({field_name:str(field), "numbers":len(group), "items":group})
     return data
 

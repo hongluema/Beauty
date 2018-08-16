@@ -417,9 +417,6 @@ def consume_static(request, response, content):
     """
     rows = Consume.objects.values().order_by("create_datetime")
     data = groupby_field(rows, "create_date")
-    for item in data["items"]:
-        item["create_datetime"] = datetime.strftime(item["create_datetime"], "%Y-%m-%d %H:%M:%S")
-        item["create_date"] = str(item["create_date"])
     content["status"] = 200
     content["data"] = {"info": data, "consume_type_desc": consume_type_desc}
 
