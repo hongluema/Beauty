@@ -434,6 +434,7 @@ def groupby_field(rows, field, field_name="date", turn_str=None):
 
     for field, group in groupby(rows, key=key):
         group = list(group)
+        group.sort(key=itemgetter(field), reverse=True)
         if turn_str:
             for g in group:
                 for i in turn_str:
