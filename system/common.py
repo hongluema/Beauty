@@ -481,7 +481,7 @@ def required_mobile(func):
         response = HttpResponse(content_type='application/json')
         response["Access-Control-Allow-Origin"] = "*"
         if get_mobile_info_from_juhe(mobile) and len(mobile) == 11:
-            func(request, response, content)
+            func(request)
         else:
             content["status"] = 400
             content["data"] = {"info": '该电话号码不存在，请核对后重新输入'}
