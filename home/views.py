@@ -23,7 +23,7 @@ from django.http import Http404
 
 # Create your views here.
 
-consume_type_desc = {1: "养生艾灸", 2: "深度补水面膜", 3: "专业祛斑", 5: "专业祛痘", 6: "祛痣", 7:"祛扁平疣"}
+consume_type_desc = {1: "艾灸经络疏通驱寒除湿健康护理套餐", 2: "面部深层补水护理套餐", 3: "翌芙莱专业祛斑", 5: "翌芙莱专业祛痘", 6: "祛痣", 7:"祛扁平疣", 8:"9.9元3次痘肌护理"}
 
 def home_index(request):
     if request.method == "POST":
