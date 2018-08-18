@@ -418,7 +418,7 @@ def consume_log(request, response, content):
         consume["activity_name"] = ""
         if consume["activity_id"]:
             join_activities = UserJoinActivity.objects.filter(uid=user.uid, activity_id=consume["activity_id"]).order_by("-create_datetime").first()# 参加的活动
-            consume["activity_name"] = "本次项目隶属于{}活动".format(join_activities.activity_name)
+            consume["activity_name"] = "本次体验隶属于{}活动".format(join_activities.activity_name)
         consume["create_datetime"] = datetime.strftime(consume["create_datetime"], "%Y-%m-%d %H:%M:%S")
     content["status"] = 200
     content["data"] = {"consumes": list(consumes), "consume_type_desc": consume_type_desc}
