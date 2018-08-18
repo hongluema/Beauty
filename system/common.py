@@ -485,7 +485,7 @@ def required_mobile(func):
         else:
             content["status"] = 400
             content["data"] = {"info": '该电话号码不存在，请核对后重新输入'}
-            if response['Content-Type'] == 'application/json':
-                response.content = json.dumps(content)
+        if response['Content-Type'] == 'application/json':
+            response.content = json.dumps(content)
         return response
     return wrapper
