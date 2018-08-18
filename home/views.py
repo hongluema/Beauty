@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 from django.shortcuts import render, redirect
-from system.common import wrap, rand_str, change_money, groupby_field
+from system.common import wrap, rand_str, change_money, groupby_field, get_mobile_info_from_juhe, required_mobile
 import os, json, calendar
 from datetime import datetime, timedelta
 from datetime import date as dt
@@ -190,7 +190,7 @@ def vip_user_info(request, response, content):
         Consume.objects.create(uid=user.uid, consume_price=price, type=type)
         content["status"] = 200
         content["data"] = {"info":"恭喜您成为会员! 会员福利多多", "consume_type_desc":consume_type_desc}
-
+@required_mobile
 @wrap
 def create_consume_log(request, response, content):
     """
@@ -349,16 +349,20 @@ def join_activity(request, response, content):
     """
     mobile = request.POST["mobile"]
     activity_id = request.POST["activity_id"]
-    user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
-    activity = Activity.objects.get(activity_id=activity_id) #活动
-    join_activity, _ = UserJoinActivity.objects.get_or_create(uid=user.uid, status=0, activity_id=activity.activity_id, defaults={"numbers":activity.numbers, "overage_numbers":activity.numbers,\
-                                                                             "activity_name":activity.activity_name, "activity_explain":activity.activity_explain})
-    if join_activity.numbers < 0:
-        info = "恭喜您参加{}活动，祝您早日美丽动人".format(activity.activity_name)
+    if get_mobile_info_from_juhe(mobile) and len(mobile) == 11:
+        user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
+        activity = Activity.objects.get(activity_id=activity_id) #活动
+        join_activity, _ = UserJoinActivity.objects.get_or_create(uid=user.uid, status=0, activity_id=activity.activity_id, defaults={"numbers":activity.numbers, "overage_numbers":activity.numbers,\
+                                                                                 "activity_name":activity.activity_name, "activity_explain":activity.activity_explain})
+        if join_activity.numbers < 0:
+            info = "恭喜您参加{}活动，祝您早日美丽动人".format(activity.activity_name)
+        else:
+            info = "恭喜您参加{}活动".format(activity.activity_name) if _ else "您已经参加{}活动，还有{}次护理未做，请及时进店享受".format(activity.activity_name, join_activity.overage_numbers)
+        content["status"] = 200
+        content["data"] = {"info":info}
     else:
-        info = "恭喜您参加{}活动".format(activity.activity_name) if _ else "您已经参加{}活动，还有{}次护理未做，请及时进店享受".format(activity.activity_name, join_activity.overage_numbers)
-    content["status"] = 200
-    content["data"] = {"info":info}
+        content["status"] = 400
+        content["data"] ={"info":'该电话号码不存在，请核对后重新输入'}
 
 
 @wrap
@@ -371,23 +375,27 @@ def user_join_activities_info(request, response, content):
     :return:
     """
     mobile = request.POST["mobile"]
-    user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
-    join_activities = UserJoinActivity.objects.filter(uid=user.uid).values().order_by("-create_datetime") #参加的所有活动
-    complete = [] #已体验完
-    not_complete = [] #未体验完
-    for activity in join_activities:
-        activity["create_datetime"] = datetime.strftime(activity["create_datetime"], "%Y-%m-%d %H:%M:%S")
-        if activity["status"] == 0: #未体验完
-            if activity["overage_numbers"] < 0:
-                activity["info"] = "恭喜您参加{}活动，祝您早日美丽动人".format(activity["activity_name"])
+    if get_mobile_info_from_juhe(mobile) and len(mobile) == 11:
+        user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
+        join_activities = UserJoinActivity.objects.filter(uid=user.uid).values().order_by("-create_datetime") #参加的所有活动
+        complete = [] #已体验完
+        not_complete = [] #未体验完
+        for activity in join_activities:
+            activity["create_datetime"] = datetime.strftime(activity["create_datetime"], "%Y-%m-%d %H:%M:%S")
+            if activity["status"] == 0: #未体验完
+                if activity["overage_numbers"] < 0:
+                    activity["info"] = "恭喜您参加{}活动，祝您早日美丽动人".format(activity["activity_name"])
+                else:
+                    activity["info"] = "您已经参加P{}活动，还有{}次护理未做，请及时进店享受".format(activity["activity_name"], activity["overage_numbers"])
+                not_complete.append(activity)
             else:
-                activity["info"] = "您已经参加P{}活动，还有{}次护理未做，请及时进店享受".format(activity["activity_name"], activity["overage_numbers"])
-            not_complete.append(activity)
-        else:
-            activity["info"] = "您已经体验完{}活动，如果喜欢可以去店里再次参加本活动".format(activity["activity_name"])
-            complete.append(activity)
-    content["status"] = 200
-    content["data"] = {"complete":complete, "not_complete":not_complete}
+                activity["info"] = "您已经体验完{}活动，如果喜欢可以去店里再次参加本活动".format(activity["activity_name"])
+                complete.append(activity)
+        content["status"] = 200
+        content["data"] = {"complete":complete, "not_complete":not_complete}
+    else:
+        content["status"] = 400
+        content["data"] ={"info":'该电话号码不存在，请核对后重新输入'}
 
 @wrap
 def consume_log(request, response, content):

@@ -442,4 +442,47 @@ def groupby_field(rows, field, field_name="date", turn_str=None, sort_field="cre
         data.append({field_name:str(field), "numbers":len(group), "items":group})
     return data
 
+# 手机归属地查询
+def get_mobile_info_from_juhe(mobile):
+    """
+    从聚合数据请求手机号信息，
+    如果请求成功，返回手机号信息；如果请求不成功，返回None
+    :param mobile:
+    :return:
+    """
+    url = "http://apis.juhe.cn/mobile/get"
+    params = {
+        "phone": mobile,  # 需要查询的手机号码或手机号码前7位
+        "key": '2cdd8687fe9165267bda95ae94b0f63f',  # 应用APPKEY(应用详细页查询)
+        "dtype": "",  # 返回数据的格式,xml或json，默认json
+    }
+    params = urllib.urlencode(params)
+    response = urllib.urlopen("%s?%s" % (url, params))
+    res = json.loads(response.read())
+    if res:
+        error_code = res["error_code"]
+        if error_code == 0:
+            # 成功请求
+            return res["result"]
+        else:
+            print "%s:%s" % (res["error_code"], res["reason"])
+            return None
+    else:
+        return None
 
+def required_mobile(func):
+    @functools.wraps(func)
+    def wrapper(request):
+        if request.method == "GET":
+            mobile = request.GET["mobile"]
+        else:
+            mobile = request.POST["mobile"]
+        content = {'status': 200}
+        response = HttpResponse(content_type='application/json')
+        response["Access-Control-Allow-Origin"] = "*"
+        if get_mobile_info_from_juhe(mobile) and len(mobile) == 11:
+            func(request, response, content)
+        else:
+            content["status"] = 400
+            content["data"] = {"info": '该电话号码不存在，请核对后重新输入'}
+    return wrapper
