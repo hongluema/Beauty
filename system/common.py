@@ -434,6 +434,8 @@ def groupby_field(rows, field, field_name="date", turn_str=None, sort_field="cre
 
     for field, group in groupby(rows, key=key):
         group = list(group)
+        for i in group:
+            i["create_datetime"] = datetime.strftime(i["create_datetime"], "%Y-%m-%d %H:%M:%S")
         group.sort(key=itemgetter(sort_field), reverse=True)
         if turn_str:
             for g in group:
