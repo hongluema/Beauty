@@ -27,6 +27,7 @@ urlpatterns = [
     url("^join/activity/$", views.join_activity, name="join_activity"), #用户参加活动
     url("^activity/$", views.activityView, name="activityView"), #获取或创建活动
     url("^user/join/activities/info/$", views.user_join_activities_info, name="user_join_activities_info"), #用户参加活动明细
+    url("^all/activity/join/info/$", views.all_activity_join_info, name="all_activity_join_info"), #所有活动的参加信息
     url("^consume/log/$", views.consume_log, name="consume_log"), #消费者消费记录
     url("^consume/static/$", views.consume_static, name="consume_static"), #消费统计，后台看的
     url("^get/type/$", views.get_type, name="get_type"), #获取类型

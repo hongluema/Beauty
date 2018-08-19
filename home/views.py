@@ -450,3 +450,23 @@ def get_type(request, response, content):
     content["status"] = 200
     content["data"] = {"type_info":consume_type_desc, "activity_id_list":list(activity_id_list)}
 
+@wrap
+def all_activity_join_info(request, response, content):
+    """
+    所有活动的参加信息
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    unique_activity_id_list = UserJoinActivity.objects.values_list("activity_id", flat=True).distinct() #去重的活动id
+    data = []
+    for activity_id in unique_activity_id_list:
+        activity_name = Activity.objects.get(activity_id=activity_id).activity_name
+        join_activity_infos = UserJoinActivity.objects.filter(activity_id=activity_id).values("uid", "overage_numbers", "create_datetime", "activity_name", "status")
+        for info in join_activity_infos:
+            mobile = User.objects.get(uid=info["uid"])
+            join_activity_infos["mobile"] = mobile
+            join_activity_infos["create_datetime"] = datetime.strftime(join_activity_infos["create_datetime"], "%Y-%m-%d %H:%M:%S")
+        data.append({"activity_id":activity_id, "activity_name":activity_name, "join_activity_infos":list(join_activity_infos), "numbers":len(join_activity_infos)})
+
