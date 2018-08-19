@@ -437,5 +437,15 @@ def consume_static(request, response, content):
     content["status"] = 200
     content["data"] = {"info": data, "consume_type_desc": consume_type_desc}
 
-
+@wrap
+def get_type(request, response, content):
+    """
+    获取类型
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    content["status"] = 200
+    content["data"] = {"type_info":consume_type_desc}
 
