@@ -448,13 +448,18 @@ def get_type(request, response, content):
     :param content:
     :return:
     """
-    activity_id_list = Activity.objects.filter(status=1).values("activity_id", "activity_name")
+    activities_list = Activity.objects.filter(status=1).values("activity_id", "activity_name").order_by("-create_datetime")
+    activity_id_list = []
+    activity_name_list = []
+    for key, value in activities_list:
+        activity_id_list.append(key)
+        activity_name_list.append(value)
     keys = sorted(consume_type_desc.keys())
     type_info = []
     for key in keys:
         type_info.append(consume_type_desc[key])
     content["status"] = 200
-    content["data"] = {"type_info":type_info, "activity_id_list":list(activity_id_list)}
+    content["data"] = {"type_info":type_info, "activity_id_list":activity_id_list, "activity_name_list":activity_name_list}
 
 @wrap
 def all_activity_join_info(request, response, content):
