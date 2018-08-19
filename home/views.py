@@ -451,9 +451,9 @@ def get_type(request, response, content):
     activities_list = Activity.objects.filter(status=1).values("activity_id", "activity_name").order_by("-create_datetime")
     activity_id_list = []
     activity_name_list = []
-    for key, value in activities_list:
-        activity_id_list.append(key)
-        activity_name_list.append(value)
+    for item in activities_list:
+        activity_id_list.append(item["activity_id"])
+        activity_name_list.append(item["activity_name"])
     keys = sorted(consume_type_desc.keys())
     type_info = []
     for key in keys:
