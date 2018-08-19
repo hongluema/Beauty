@@ -469,4 +469,5 @@ def all_activity_join_info(request, response, content):
             info["mobile"] = mobile
             info["create_datetime"] = datetime.strftime(info["create_datetime"], "%Y-%m-%d %H:%M:%S")
         data.append({"activity_id":activity_id, "activity_name":activity_name, "join_activity_infos":list(join_activity_infos), "numbers":len(join_activity_infos)})
-
+    content["status"] = 200
+    content["data"] = {"info":data}
