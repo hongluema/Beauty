@@ -23,8 +23,8 @@ from django.http import Http404
 
 # Create your views here.
 
-consume_type_desc = {1: "艾灸经络疏通驱寒除湿健康护理套餐", 2: "面部深层补水护理套餐", 3: "翌芙莱专业祛斑", 5: "翌芙莱专业祛痘", 6: "祛痣", 7:"祛扁平疣", 8:"9.9元3次痘肌护理"}
-consume_type_dict = {1: "884eeb", 2: "74b520", 3: "7235ea", 5: "7235ea", 8:"a5bf13"}
+consume_type_desc = {0: "艾灸经络疏通驱寒除湿健康护理套餐", 1: "面部深层补水护理套餐", 2: "翌芙莱专业祛斑", 3: "翌芙莱专业祛痘", 4: "祛痣", 5:"祛扁平疣", 6:"9.9元3次痘肌护理"}
+consume_type_dict = {0: "884eeb", 1: "74b520", 2: "7235ea", 3: "7235ea", 6:"a5bf13"}
 
 def home_index(request):
     if request.method == "POST":
@@ -448,8 +448,12 @@ def get_type(request, response, content):
     :return:
     """
     activity_id_list = Activity.objects.filter(status=1).values("activity_id", "activity_name")
+    keys = sorted(consume_type_desc.keys())
+    type_info = []
+    for key in keys:
+        type_info.append(consume_type_desc[key])
     content["status"] = 200
-    content["data"] = {"type_info":consume_type_desc, "activity_id_list":list(activity_id_list)}
+    content["data"] = {"type_info":type_info, "activity_id_list":list(activity_id_list)}
 
 @wrap
 def all_activity_join_info(request, response, content):
