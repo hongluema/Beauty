@@ -465,7 +465,7 @@ def all_activity_join_info(request, response, content):
         activity_name = Activity.objects.get(activity_id=activity_id).activity_name
         join_activity_infos = UserJoinActivity.objects.filter(activity_id=activity_id).values("uid", "overage_numbers", "create_datetime", "activity_name", "status")
         for info in join_activity_infos:
-            mobile = User.objects.get(uid=info["uid"])
+            mobile = User.objects.get(uid=info["uid"]).mobile
             info["mobile"] = mobile
             info["create_datetime"] = datetime.strftime(info["create_datetime"], "%Y-%m-%d %H:%M:%S")
         data.append({"activity_id":activity_id, "activity_name":activity_name, "join_activity_infos":list(join_activity_infos), "numbers":len(join_activity_infos)})
