@@ -446,6 +446,7 @@ def get_type(request, response, content):
     :param content:
     :return:
     """
+    activity_id_list = Activity.objects.filter(status=1).values("activity_id", "activity_name")
     content["status"] = 200
-    content["data"] = {"type_info":consume_type_desc}
+    content["data"] = {"type_info":consume_type_desc, "activity_id_list":list(activity_id_list)}
 
