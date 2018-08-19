@@ -24,6 +24,7 @@ from django.http import Http404
 # Create your views here.
 
 consume_type_desc = {1: "艾灸经络疏通驱寒除湿健康护理套餐", 2: "面部深层补水护理套餐", 3: "翌芙莱专业祛斑", 5: "翌芙莱专业祛痘", 6: "祛痣", 7:"祛扁平疣", 8:"9.9元3次痘肌护理"}
+consume_type_dict = {1: "884eeb", 2: "74b520", 3: "7235ea", 5: "7235ea", 8:"a5bf13"}
 
 def home_index(request):
     if request.method == "POST":
@@ -202,9 +203,9 @@ def create_consume_log(request, response, content):
     :return:
     """
     mobile = request.POST["mobile"]
-    activity_id = request.POST.get("activity_id","")
     price = int(request.POST.get("price",0))
     type = int(request.POST["type"])
+    activity_id = consume_type_dict.get(type)
     if get_mobile_info_from_juhe(mobile) and len(mobile) == 11:
         user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
         Consume.objects.create(uid=user.uid, activity_id=activity_id, consume_price=price, type=type)
