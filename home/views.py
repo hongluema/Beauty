@@ -493,5 +493,5 @@ def set_title(request, response, content):
     :return:
     """
     content["status"] = 200
-    content["data"] = {"title":"微信小程序", "tabName":"首页"}
+    content["data"] = {"title":"翌芙莱专业祛斑祛痘", "tabName":"热销活动"}
 
