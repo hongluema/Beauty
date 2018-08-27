@@ -493,5 +493,5 @@ def set_title(request, response, content):
     :return:
     """
     content["status"] = 200
-    content["data"] = {"title":"小程序首页"}
+    content["data"] = {"title":"小程序首页", "tabName":"首页"}
 
