@@ -493,5 +493,6 @@ def set_title(request, response, content):
     :return:
     """
     content["status"] = 200
-    content["data"] = {"title":"翌芙莱专业祛斑祛痘", "tabName":"热销活动"}
+    content["data"] = {"title":"微信小程序", "tabName":"首页", "active_picture":"http://7xrn7t.dl1.z0.glb.clouddn.com/logo.jpeg"}
+    # content["data"] = {"title":"翌芙莱专业祛斑祛痘", "tabName":"热销活动", "active_picture":"http://7xrn7t.dl1.z0.glb.clouddn.com/logo.jpeg"}
 
