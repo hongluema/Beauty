@@ -31,4 +31,5 @@ urlpatterns = [
     url("^consume/log/$", views.consume_log, name="consume_log"), #消费者消费记录
     url("^consume/static/$", views.consume_static, name="consume_static"), #消费统计，后台看的
     url("^get/type/$", views.get_type, name="get_type"), #获取类型
+    url("^set/title/$", views.set_title, name="set_title"), #设置标题
 ]

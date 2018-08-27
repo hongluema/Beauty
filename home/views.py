@@ -482,3 +482,16 @@ def all_activity_join_info(request, response, content):
         data.append({"activity_id":activity_id, "activity_name":activity_name, "join_activity_infos":list(join_activity_infos), "numbers":len(join_activity_infos)})
     content["status"] = 200
     content["data"] = {"info":data}
+
+@wrap
+def set_title(request, response, content):
+    """
+    设置标题
+    :param request:
+    :param response:
+    :param content:
+    :return:
+    """
+    content["status"] = 200
+    content["data"] = {"title":"小程序首页"}
+
