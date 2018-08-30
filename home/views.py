@@ -206,7 +206,7 @@ def create_consume_log(request, response, content):
     price = int(request.POST.get("price",0))
     type = int(request.POST["type"])
     activity_id = consume_type_dict.get(type,"")
-    if get_mobile_info_from_juhe(mobile) and len(mobile) == 11:
+    if get_mobile_info_from_juhe(mobile):
         user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
         if activity_id:
             join_activity = UserJoinActivity.objects.filter(uid=user.uid, activity_id=activity_id, status=0) #用户参加的活动
