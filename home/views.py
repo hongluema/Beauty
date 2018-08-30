@@ -208,28 +208,28 @@ def create_consume_log(request, response, content):
     price = int(request.POST.get("price",0))
     type = int(request.POST["type"])
     activity_id = consume_type_dict.get(type,"")
-    if get_mobile_info_from_juhe(mobile):
-        user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
-        if activity_id:
-            join_activity = UserJoinActivity.objects.filter(uid=user.uid, activity_id=activity_id, status=0) #用户参加的活动
-            if join_activity:
-                join_activity.overage_numbers -= 1
-                if join_activity.overage_numbers == 0: #标记为已经体验完成
-                       join_activity.status = 1
-                join_activity.save()
-                Consume.objects.create(uid=user.uid, activity_id=activity_id, consume_price=price, type=type)
-                content["status"] = 200
-                content["data"] = {"info": "恭喜您参加{}活动, 您还有{}次护理未享受".format(join_activity.activity_name, join_activity.overage_numbers), "consume_type_desc": consume_type_desc}
-            else:
-                content["status"] = 401
-                content["data"] = {"info":"不好意思，您还未参加或者已经享受完成该活动，请咨询店主，办理参加！", "consume_type_desc": consume_type_desc}
-        else:
+    # if get_mobile_info_from_juhe(mobile):
+    user, _ = User.objects.get_or_create(mobile=mobile, defaults={"uid": rand_str(16), "username": "匿名用户"})
+    if activity_id:
+        join_activity = UserJoinActivity.objects.filter(uid=user.uid, activity_id=activity_id, status=0) #用户参加的活动
+        if join_activity:
+            join_activity.overage_numbers -= 1
+            if join_activity.overage_numbers == 0: #标记为已经体验完成
+                   join_activity.status = 1
+            join_activity.save()
             Consume.objects.create(uid=user.uid, activity_id=activity_id, consume_price=price, type=type)
             content["status"] = 200
-            content["data"] = {"info": "谢谢您的光临", "consume_type_desc": consume_type_desc}
+            content["data"] = {"info": "恭喜您参加{}活动, 您还有{}次护理未享受".format(join_activity.activity_name, join_activity.overage_numbers), "consume_type_desc": consume_type_desc}
+        else:
+            content["status"] = 401
+            content["data"] = {"info":"不好意思，您还未参加或者已经享受完成该活动，请咨询店主，办理参加！", "consume_type_desc": consume_type_desc}
     else:
-        content["status"] = 400
-        content["data"] = {"info": '该电话号码不存在，请核对后重新输入'}
+        Consume.objects.create(uid=user.uid, activity_id=activity_id, consume_price=price, type=type)
+        content["status"] = 200
+        content["data"] = {"info": "谢谢您的光临", "consume_type_desc": consume_type_desc}
+    # else:
+    #     content["status"] = 400
+    #     content["data"] = {"info": '该电话号码不存在，请核对后重新输入'}
     # vip_user = VipUser.objects.filter(uid=user.uid).first()
     # tag = False
     # if vip_user.overage >= price:
