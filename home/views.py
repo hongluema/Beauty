@@ -474,7 +474,7 @@ def all_activity_join_info(request, response, content):
     data = []
     for activity_id in unique_activity_id_list:
         activity_name = Activity.objects.get(activity_id=activity_id).activity_name
-        join_activity_infos = UserJoinActivity.objects.filter(activity_id=activity_id).values("uid", "overage_numbers", "create_datetime", "activity_name", "status")
+        join_activity_infos = UserJoinActivity.objects.filter(activity_id=activity_id).values("uid", "overage_numbers", "create_datetime", "activity_name", "status").order_by("-create_datetime")
         for info in join_activity_infos:
             mobile = User.objects.get(uid=info["uid"]).mobile
             info["mobile"] = mobile
