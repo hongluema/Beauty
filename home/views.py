@@ -203,6 +203,8 @@ def create_consume_log(request, response, content):
     :return:
     """
     mobile = request.POST.get("mobile", "匿名用户")
+    if mobile == "":
+        mobile = "匿名用户"
     price = int(request.POST.get("price",0))
     type = int(request.POST["type"])
     activity_id = consume_type_dict.get(type,"")
