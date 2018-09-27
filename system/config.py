@@ -1,0 +1,9 @@
+# encoding: utf-8
+
+ZHAOCAIHUO_HOST = "10.66.131.159"
+ZHAOCAIHUO_USER = "crs-0ng0ncpo"
+ZHAOCAIHUO_PASSWORD = "kUk8Rd023t4o"
+
+EMAIL_USER = "walry888@163.com"
+EMAIL_PASSWORD = "laojiang158386"
+EMAIL_HOST = "smtp.163.com"
